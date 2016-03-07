@@ -2,15 +2,15 @@ require_relative 'find_by'
 require_relative 'errors'
 require 'csv'
 
+DATA_PATH = File.dirname(__FILE__) + "/../data/data.csv"
 class Udacidata
 	def self.create(attributes = nil)
-		data_path = File.dirname(__FILE__) + "/../data/data.csv"
-		CSV.foreach(data_path) do |csv|
+		CSV.foreach(DATA_PATH) do |csv|
 			if csv[2] == attributes[:name]
 				return self.new(id: csv[0], brand: csv[1], name: csv[2], price: csv[3])
 			else
 				object = self.new(attributes)
-				CSV.open(data_path, "a") do |csv|
+				CSV.open(DATA_PATH, "a") do |csv|
 					csv << [object.id, object.brand, object.name, object.price]
 				end
 				return object
@@ -19,9 +19,8 @@ class Udacidata
 	end
 
 	def self.all
-		data_path = File.dirname(__FILE__) + "/../data/data.csv"
 		array = []
-		CSV.foreach(data_path, headers:true) do |csv|
+		CSV.foreach(DATA_PATH, headers:true) do |csv|
 			array.push(self.new(id: csv[0], brand: csv[1], name: csv[2], price: csv[3]))
 		end
 		array
@@ -53,14 +52,14 @@ class Udacidata
 		self.all[index]
 	end
 	def self.destroy(index)
-		data_path = File.dirname(__FILE__) + "/../data/data.csv"
-		array = CSV.read(data_path)
-		deleted = array.delete_if {|row| row[0].to_i == self.find(index).id}
-		CSV.open(data_path, "wb") do |csv|
+		array = CSV.read(DATA_PATH)
+		deleted = self.find(index)
+		array.delete_if {|row| row[0].to_i == deleted.id }
+		CSV.open(DATA_PATH, "wb") do |csv|
 			array.each do |ar|
 				csv << ar
 			end
 		end
-		Product.new(deleted)
+		deleted
 	end
 end

@@ -16,7 +16,7 @@ def db_seed
 		product = Product.new(id:i-1,brand:brand[i],name:products_names[i],price:prices[i])
 		database.push(product)
 	end	
-	CSV.open(@data_path,"wb") do |csv|
+	CSV.open(DATA_PATH,"wb") do |csv|
 		database.each do |data|
 			csv << [data.id,data.brand,data.name,data.price]
 		end
