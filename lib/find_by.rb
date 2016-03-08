@@ -1,4 +1,3 @@
-
 class Module
 	def create_finder_methods(*attributes)
 		attributes.each do |attribute|
