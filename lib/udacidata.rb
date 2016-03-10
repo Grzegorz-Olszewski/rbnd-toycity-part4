@@ -49,10 +49,20 @@ class Udacidata
 		end
 	end
 	def self.find(index)
-		self.all[index]
+		array = self.all
+		array.each do |product|
+			if product.id == index
+				return product
+			end
+		end
+		raise ProductNotFoundError, "Product with #{index} id doesn't exist"
 	end
+
 	def self.destroy(index)
 		array = CSV.read(DATA_PATH)
+		if self.find(index) == false
+			raise ProductNotFoundError, "Product with #{index} id doesn't exist"
+		end
 		deleted = self.find(index)
 		array.delete_if {|row| row[0].to_i == deleted.id }
 		CSV.open(DATA_PATH, "wb") do |csv|
@@ -61,5 +71,39 @@ class Udacidata
 			end
 		end
 		deleted
+	end
+	def self.where(attribute = nul)
+		array = self.all
+		return_array = []
+		array.each do |item|
+			if item.brand == attribute[:brand] || item.name == attribute[:name]
+				return_array.push(item)
+			end
+		end
+		return_array
+	end
+	def update(attribute = nul)
+		array = CSV.read(DATA_PATH)
+		id = 0
+		array.each do |row|
+			if row[0].to_i == self.id
+				if attribute[:brand].nil? == false
+					row[1] = attribute[:brand]
+				end
+				if attribute[:name].nil? == false
+					row[2] = attribute[:name]
+				end
+				if attribute[:price].nil? == false
+					row[3] = attribute[:price]
+				end
+				id = row[0].to_i
+			end
+		end
+		CSV.open(DATA_PATH, "wb") do |csv|
+			array.each do |ar|
+				csv << ar
+			end
+		end
+		Product.find(id)
 	end
 end
