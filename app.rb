@@ -111,7 +111,7 @@ include Analyzable
   puts "RETURN HASH WITH NAME COUNTS"
   puts "----------------------------"
   print Analyzable::count_by_name(Product.all)
- 
+
   puts
   puts "----------------------------"
   puts "RETURN HASH WITH BRAND COUNTS"
