@@ -27,43 +27,32 @@ class Udacidata
 	end
 
 	def self.first(number = nil)
-		array = []
 		if number.nil?
-			self.all[0]
+			self.all.first 
 		else 	
-			number.times do |i|
-				array.push(self.all[i])
-			end
-			array
+			self.all.first(number)
 		end
 	end
 	def self.last(number = nil)
-		array = []
 		if number.nil?
-			self.all[self.all.length - 1]
+			self.all.last
 		else 	
-			number.times do |i|
-				array.push(self.all[self.all.length - 1 - i])
-			end	
-			array
+			self.all.last(number)
 		end
 	end
-	def self.find(index)
+	def self.find(id)
 		array = self.all
 		array.each do |product|
-			if product.id == index
+			if product.id == id
 				return product
 			end
 		end
-		raise ProductNotFoundError, "Product with #{index} id doesn't exist"
+		raise ProductNotFoundError, "Product with #{id} id doesn't exist"
 	end
 
-	def self.destroy(index)
+	def self.destroy(id)
 		array = CSV.read(DATA_PATH)
-		if self.find(index) == false
-			raise ProductNotFoundError, "Product with #{index} id doesn't exist"
-		end
-		deleted = self.find(index)
+		deleted = self.find(id)
 		array.delete_if {|row| row[0].to_i == deleted.id }
 		CSV.open(DATA_PATH, "wb") do |csv|
 			array.each do |ar|
@@ -72,7 +61,7 @@ class Udacidata
 		end
 		deleted
 	end
-	def self.where(attribute = nul)
+	def self.where(attribute = nil)
 		array = self.all
 		return_array = []
 		array.each do |item|
@@ -82,7 +71,7 @@ class Udacidata
 		end
 		return_array
 	end
-	def update(attribute = nul)
+	def update(attribute = nil)
 		array = CSV.read(DATA_PATH)
 		id = 0
 		array.each do |row|
